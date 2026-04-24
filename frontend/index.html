@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BFHL API</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+
+    textarea {
+      width: 320px;
+      height: 100px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #22c55e;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    pre {
+      text-align: left;
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>BFHL Hierarchy Builder</h1>
+
+<p>Enter nodes (comma separated)</p>
+
+<textarea id="input">A->B,A->C,B->D</textarea><br>
+
+<button onclick="send()">Submit</button>
+
+<pre id="output">Output will appear here...</pre>
+
+<script>
+async function send() {
+  const raw = document.getElementById("input").value;
+
+  const data = raw.split(",").map(x => x.trim());
+
+  try {
+    const res = await fetch("http://localhost:3000/bfhl", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ data })
+    });
+
+    const result = await res.json();
+
+    document.getElementById("output").innerText =
+      JSON.stringify(result, null, 2);
+
+  } catch (err) {
+    document.getElementById("output").innerText =
+      "Error connecting to API";
+  }
+}
+</script>
+
+</body>
+</html>
